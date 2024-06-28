@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ten Fruits Classification</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet" />
+
+    <!-- Google Fonts -->
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+    </style>
+
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <style>
+      body {
+        font-family: "Rubik", sans-serif;
+        background-color: #e2dfd2;
+      }
+
+      .image-preview {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .custom-card {
+        height: 260px;
+        margin-bottom: 10px;
+      }
+
+      .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+      }
+
+      .loading-text {
+        font-size: 20px;
+        color: #333;
+      }
+
+      .navbar-custom {
+        background-color: #343a40;
+      }
+
+      .navbar-custom .navbar-brand {
+        color: #ffffff;
+      }
+
+      .navbar-custom .navbar-nav .nav-link {
+        color: #ffffff;
+      }
+
+      .navbar-custom .navbar-nav .nav-link:hover {
+        color: #f0ad4e;
+      }
+
+      .footer-custom {
+        background-color: #343a40;
+        color: #ffffff;
+        padding: 10px 0;
+        text-align: center;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+      <div class="container">
+        <a class="navbar-brand" href="#">Fruits Classification</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/">Classification</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/report/1">Report</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/report/2">Report 2</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mt-5 mb-5">
+      <div class="row">
+        <div class="col text-center" data-aos="zoom-in" data-aos-duration="750">
+          <h1 class="mb-3">Fruits Classification</h1>
+        </div>
+      </div>
+      <!-- Dua card utama dengan ukuran yang sama -->
+      <div class="row mb-4">
+        <!-- Card untuk input gambar -->
+        <div class="col-md-6">
+          <div
+            class="card custom-card"
+            data-aos="zoom-in"
+            data-aos-duration="1000">
+            <div class="card-body">
+              <h5 class="card-title">Upload an Image</h5>
+              <hr />
+              <form id="image-form" enctype="multipart/form-data">
+                <div class="mb-3">
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="image-input"
+                    name="file" />
+                </div>
+                <button type="submit" class="btn btn-primary" id="predict-btn">
+                  Predict
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary ms-2 btn-danger"
+                  id="reset-btn"
+                  disabled>
+                  Reset
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card untuk menampilkan gambar dan hasil klasifikasi -->
+        <div class="col-md-6">
+          <div
+            class="card custom-card"
+            data-aos="zoom-in"
+            data-aos-duration="1000">
+            <div class="card-body">
+              <h5 class="card-title">Prediction Result</h5>
+              <hr />
+              <div id="image-prediction" class="text-center">
+                <img
+                  id="selected-image"
+                  src="#"
+                  alt="Selected Image"
+                  class="img-fluid image-preview d-none" />
+                <div id="prediction-details" class="mt-3">
+                  <!-- Hasil prediksi akan ditampilkan di sini -->
+                </div>
+                <!-- Loading overlay -->
+                <div id="loading-overlay" class="loading-overlay">
+                  <div class="loading-text">Loading...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card untuk "Fun Fact" -->
+      <div class="row">
+        <div class="col-md-6 offset-md-3">
+          <div
+            class="card text-center"
+            data-aos="zoom-in"
+            data-aos-duration="2000">
+            <div class="card-body">
+              <h5 class="card-title">Fun Fact</h5>
+              <hr />
+              <p class="card-text">
+                Mau tau tentang buah hasil klasifikasi kamu?
+              </p>
+              <button type="submit" class="btn btn-primary" id="generate-btn">
+                Generate
+              </button>
+              <div id="fun-fact" class="mt-3">
+                <!-- Fakta menyenangkan akan ditampilkan di sini -->
+              </div>
+              <!-- Loading overlay for Generate button -->
+              <div id="generate-loading-overlay" class="loading-overlay">
+                <div class="loading-text">Generating...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-custom">
+      <div class="container">
+        <p class="mb-0">&copy; 2024 Mahsa Nurfarhan Hidayat.</p>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS dan Popper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      let predictionDone = false;
+      let predictedFruit = ""; // Variable to store the predicted fruit
+
+      // Ketika user memilih gambar, tampilkan preview di halaman
+      document
+        .getElementById("image-input")
+        .addEventListener("change", function () {
+          resetPrediction();
+          var file = this.files[0];
+          if (file) {
+            var reader = new FileReader();
+            reader.onload = function (event) {
+              var img = new Image();
+              img.onload = function () {
+                var canvas = document.createElement("canvas");
+                var ctx = canvas.getContext("2d");
+                canvas.width = 100;
+                canvas.height = 100;
+                ctx.drawImage(img, 0, 0, 100, 100);
+                document
+                  .getElementById("selected-image")
+                  .setAttribute("src", canvas.toDataURL());
+                document
+                  .getElementById("selected-image")
+                  .classList.remove("d-none");
+                document.getElementById("reset-btn").disabled = false;
+              };
+              img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+      document.getElementById("image-form").onsubmit = async function (event) {
+        event.preventDefault();
+
+        showLoading();
+        predictionDone = true;
+
+        let formData = new FormData();
+        let fileInput = document.getElementById("image-input");
+        formData.append("file", fileInput.files[0]);
+
+        try {
+          let response = await fetch("/predict", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          let jsonResponse = await response.json();
+          predictedFruit = jsonResponse.predicted_class; // Store the predicted fruit
+          displayPrediction(jsonResponse);
+        } catch (error) {
+          console.error("Error:", error);
+        } finally {
+          hideLoading();
+          document.getElementById("reset-btn").disabled = false;
+        }
+      };
+
+      function displayPrediction(prediction) {
+        let predictionDetails = document.getElementById("prediction-details");
+        predictionDetails.innerHTML = `
+          <p><strong>Predicted Fruit:</strong> ${prediction.predicted_class}</p>
+          <p><strong>Confidence:</strong> ${prediction.confidence}%</p>
+        `;
+      }
+
+      function showLoading() {
+        document.getElementById("loading-overlay").style.display = "flex";
+      }
+
+      function hideLoading() {
+        document.getElementById("loading-overlay").style.display = "none";
+      }
+
+      function resetPrediction() {
+        document.getElementById("selected-image").classList.add("d-none");
+        document.getElementById("prediction-details").innerHTML = "";
+        document.getElementById("reset-btn").disabled = true;
+        predictionDone = false;
+        predictedFruit = ""; // Reset the predicted fruit
+
+        document.getElementById("fun-fact").innerHTML = "";
+      }
+
+      document
+        .getElementById("reset-btn")
+        .addEventListener("click", function () {
+          resetPrediction();
+          document.getElementById("image-form").reset();
+        });
+
+      document
+        .getElementById("reset-btn")
+        .addEventListener("mousedown", function (event) {
+          if (!predictionDone) {
+            event.preventDefault();
+          }
+        });
+
+      // Event listener for the "Generate" button
+      document
+        .getElementById("generate-btn")
+        .addEventListener("click", async function () {
+          if (!predictionDone) {
+            alert("Please predict the fruit first!");
+            return;
+          }
+
+          showGenerateLoading();
+
+          try {
+            let response = await fetch(`/generate?fruit=${predictedFruit}`);
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            let funFact = await response.json();
+            displayFunFact(funFact);
+          } catch (error) {
+            console.error("Error:", error);
+          } finally {
+            hideGenerateLoading();
+          }
+        });
+
+      function displayFunFact(funFact) {
+        let funFactDiv = document.getElementById("fun-fact");
+        funFactDiv.innerHTML = `<p>${funFact.fact}</p>`;
+      }
+
+      function showGenerateLoading() {
+        document.getElementById("generate-loading-overlay").style.display =
+          "flex";
+      }
+
+      function hideGenerateLoading() {
+        document.getElementById("generate-loading-overlay").style.display =
+          "none";
+      }
+    </script>
+
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
+  </body>
+</html>
